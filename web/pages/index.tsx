@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { SERVER } from '../lib/constants';
 
-export default function HomePage() {
+export default function Login() {
   const { publicKey } = useWallet();
 
   useEffect(() => {

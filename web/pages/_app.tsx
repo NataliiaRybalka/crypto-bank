@@ -4,7 +4,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl } from '@solana/web3.js';
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
-import HomePage from './index';
+import Login from './index';
 
 import '../styles/_app.css';
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -24,7 +24,7 @@ function MyApp() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <HomePage />
+          <Login />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

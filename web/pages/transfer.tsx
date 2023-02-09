@@ -1,13 +1,11 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { Keypair, Transaction } from '@solana/web3.js';
-import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
-import { MakeTransactionInputData, MakeTransactionOutputData } from './api/makeTransaction';
 import { findReference, FindReferenceError } from '@solana/pay';
+import { useRouter } from 'next/router';
 
-export default function Checkout() {
+export default function Transfer() {
   const router = useRouter();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
@@ -37,7 +35,7 @@ export default function Checkout() {
       return;
     }
 
-    const body: MakeTransactionInputData = {
+    const body = {
       account: publicKey.toString(),
     }
 
@@ -49,7 +47,7 @@ export default function Checkout() {
       body: JSON.stringify(body),
     })
 
-    const json = await response.json() as MakeTransactionOutputData
+    const json = await response.json();
 
     if (response.status !== 200) {
       console.error(json);
