@@ -1,0 +1,23 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/web/node_modules
+/server/node_modules
+
+# next.js
+/web/.next/
+
+# production
+/web/build
+
+# local env files
+/web/.env
+/server/.env
+
+# docker files
+/server/docker-compose.override.yml
+
+# server
+/server/yarn-error.log
+/server/.data
+/server/.idea

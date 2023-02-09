@@ -1,0 +1,32 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "author": "Nataliia Rybalka <natalirybalka21@gmail.com>",
+  "license": "ISC",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@solana/pay": "^0.2.0",
+    "@solana/spl-token": "^0.3.7",
+    "@solana/wallet-adapter-base": "^0.9.20",
+    "@solana/wallet-adapter-react": "^0.15.28",
+    "@solana/wallet-adapter-react-ui": "^0.9.27",
+    "@solana/wallet-adapter-wallets": "^0.19.11",
+    "@solana/web3.js": "^1.73.2",
+    "bignumber.js": "^9.0.2",
+    "next": "latest",
+    "react": "^17.0.2",
+    "react-circular-progressbar": "^2.1.0",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.4",
+    "@types/react": "17.0.38",
+    "autoprefixer": "^10.4.0",
+    "prettier": "^2.5.1",
+    "typescript": "4.5.4"
+  }
+}

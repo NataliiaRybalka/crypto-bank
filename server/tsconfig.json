@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es6", "es7", "esnext", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noEmit": true,
+    "noImplicitReturns": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES6"
+  },
+  "include": ["src"],
+  "exclude": ["tests/**/*.spec.ts", "tests/**/*.test.ts", "src/index.js", "test/index.ts"]
+}
