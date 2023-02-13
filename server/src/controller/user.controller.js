@@ -50,9 +50,7 @@ const transfer = async (req, res) => {
     return;
   }
   const sum = new _bignumber.default(amount);
-  if (sum.toNumber() === 0) {
-    return;
-  }
+  if (sum.toNumber() === 0) return;
   try {
     const network = _walletAdapterBase.WalletAdapterNetwork.Devnet;
     const endpoint = (0, _web.clusterApiUrl)(network);

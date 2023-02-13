@@ -36,9 +36,7 @@ export const transfer = async (req: Request, res: Response) => {
   }
 
   const sum = new BigNumber(amount as string);
-  if (sum.toNumber() === 0) {
-    return;
-  }
+  if (sum.toNumber() === 0) return;
 
   try {
     const network = WalletAdapterNetwork.Devnet;
@@ -103,7 +101,6 @@ export const transfer = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({error: 'error creating transaction'});
     return;
   }
