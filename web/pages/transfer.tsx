@@ -45,6 +45,9 @@ export default function Transfer() {
 
     const transaction = Transaction.from(Buffer.from(json.transaction, 'base64'));
     setTransaction(transaction);
+
+    setRecipient(null);
+    setAmount('0');
   }
 
   async function trySendTransaction() {
@@ -71,8 +74,8 @@ export default function Transfer() {
 
   return (
     <div>
-      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' />
+      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} value={recipient?.toString()} />
+      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' value={amount} />
       <label>Currency: </label>
       <select onChange={(e) => setCurrency(e.target.value)}>
         <option value='sol'>SOL</option>
@@ -86,3 +89,5 @@ export default function Transfer() {
     </div>
   )
 }
+
+// 89D7KBRL4xnfotkdVojgCmWNNp6wpqBqaufSHwUNuoMu

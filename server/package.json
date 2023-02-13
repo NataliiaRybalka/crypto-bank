@@ -13,6 +13,7 @@
   "author": "Nataliia Rybalka <natalirybalka21@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@solana/spl-token": "^0.3.7",
     "@solana/wallet-adapter-base": "^0.9.20",
     "@solana/web3.js": "^1.73.2",
     "bignumber.js": "^9.1.1",
