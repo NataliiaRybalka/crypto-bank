@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { login, transfer } = require('./controller/user.controller');
 
-mongoose.connect('mongodb://db/bank', (err, db) => {
+mongoose.connect('mongodb://db/crypto-bank', (err, db) => {
   if(err) console.log('database is not connected');
   else console.log('connected');
 });
