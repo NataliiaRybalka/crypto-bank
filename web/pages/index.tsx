@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { SERVER } from '../lib/constants';
+import Transfer from './transfer';
 
-export default function HomePage() {
+export default function Login() {
   const { publicKey } = useWallet();
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function HomePage() {
   return (
     <div>
       <WalletMultiButton />
+      <Transfer />
     </div>
   )
 }
