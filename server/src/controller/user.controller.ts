@@ -1,10 +1,8 @@
 import {Request, Response} from 'express';
-import { IUser } from '../db/user/user.types';
 import UserSchema from '../db/user/user.schema';
 
 export const login = async (req: Request, res: Response) => {
-  // @ts-ignore
-  const { account } = req.params as IUser;
+  const { account } = req.params;
   if (!account || account === null) {
     res.status(400).json({error: 'No params provided'});
     return;
@@ -18,4 +16,20 @@ export const login = async (req: Request, res: Response) => {
   } catch (e) {
     res.status(404).json('User not found');
   }
+};
+
+export const getUser = async (req: Request, res: Response) => {
+  const { account } = req.query;
+  if (!account) {
+    res.status(400).json({error: 'Account is not specified'});
+    return;
+  }
+
+  const user = await UserSchema.findOne({ account });
+  if (!user) {
+    res.status(400).json({error: 'Merchant is not defined'});
+    return;
+  }
+
+  res.status(200).json({ user });
 };

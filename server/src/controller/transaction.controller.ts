@@ -22,9 +22,7 @@ export const saveTx = async (req: Request, res: Response) => {
   }
 };
 
-export const transferGet = async (req: Request, res: Response) => {};
-
-export const transferPost = async (req: Request, res: Response) => {
+export const postTransfer = async (req: Request, res: Response) => {
   const {recipient, currency, amount, reference} = req.query;
   const {account} = req.body;
 

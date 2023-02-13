@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.transferPost = exports.transferGet = exports.saveTx = void 0;
+exports.saveTx = exports.postTransfer = void 0;
 var _walletAdapterBase = require("@solana/wallet-adapter-base");
 var _web = require("@solana/web3.js");
 var _splToken = require("@solana/spl-token");
@@ -39,9 +39,7 @@ const saveTx = async (req, res) => {
   }
 };
 exports.saveTx = saveTx;
-const transferGet = async (req, res) => {};
-exports.transferGet = transferGet;
-const transferPost = async (req, res) => {
+const postTransfer = async (req, res) => {
   const {
     recipient,
     currency,
@@ -114,4 +112,4 @@ const transferPost = async (req, res) => {
     return;
   }
 };
-exports.transferPost = transferPost;
+exports.postTransfer = postTransfer;
