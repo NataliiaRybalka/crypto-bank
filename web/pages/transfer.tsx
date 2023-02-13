@@ -9,7 +9,7 @@ export default function Transfer() {
 
   const [transaction, setTransaction] = useState<Transaction | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('0.00001');
   const [currency, setCurrency] = useState<string>('sol');
   const [recipient, setRecipient] = useState<PublicKey | null | string>(null);
 
@@ -28,7 +28,7 @@ export default function Transfer() {
       account: publicKey.toString(),
     };
 
-    const response = await fetch(`${SERVER}user/transfer?${searchParams.toString()}`, {
+    const response = await fetch(`${SERVER}tx/transfer?${searchParams.toString()}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ export default function Transfer() {
   return (
     <div>
       <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' />
+      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' value={amount} />
       <label>Currency: </label>
       <select onChange={(e) => setCurrency(e.target.value)}>
         <option value='sol'>SOL</option>
