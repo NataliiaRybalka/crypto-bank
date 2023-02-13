@@ -3,10 +3,10 @@ import { IUser } from './user.types';
 
 const UserSchema = new Schema(
   {
-    address: {
+    account: {
       type: String,
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

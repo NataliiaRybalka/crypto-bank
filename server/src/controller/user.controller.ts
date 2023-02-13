@@ -3,13 +3,13 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { getMint, getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
-import { IUser } from '../db/user.types';
-import UserSchema from '../db/user.schema';
+import { IUser } from '../db/user/user.types';
+import UserSchema from '../db/user/user.schema';
 import { usdcAddress } from '../lib/addresses';
 
 export const login = async (req: Request, res: Response) => {
   // @ts-ignore
-  const account = req.params.account as IUser;
+  const { account } = req.params as IUser;
   if (!account || account === null) {
     res.status(400).json({error: 'No params provided'});
     return;
@@ -23,7 +23,6 @@ export const login = async (req: Request, res: Response) => {
   } catch (e) {
     res.status(404).json('User not found');
   }
-
 };
 
 export const transfer = async (req: Request, res: Response) => {
