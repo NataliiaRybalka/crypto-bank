@@ -9,7 +9,7 @@ import { usdcAddress } from '../lib/addresses';
 
 export const login = async (req: Request, res: Response) => {
   // @ts-ignore
-  const account = req.params.account as IUser;
+  const { account } = req.params as IUser;
   if (!account || account === null) {
     res.status(400).json({error: 'No params provided'});
     return;
@@ -23,7 +23,6 @@ export const login = async (req: Request, res: Response) => {
   } catch (e) {
     res.status(404).json('User not found');
   }
-
 };
 
 export const transfer = async (req: Request, res: Response) => {

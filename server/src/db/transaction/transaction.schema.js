@@ -22,6 +22,10 @@ const TransactionSchema = new _mongoose.Schema({
     type: String,
     required: true,
     enum: ['sol', 'usdc']
+  },
+  hash: {
+    type: String,
+    required: true
   }
 }, {
   timestamps: true

@@ -3,4 +3,5 @@ export interface ITransaction {
   recipient: string;
   amount: number;
   currency: string;
+  hash: string;
 }

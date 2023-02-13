@@ -45,16 +45,32 @@ export default function Transfer() {
 
     const transaction = Transaction.from(Buffer.from(json.transaction, 'base64'));
     setTransaction(transaction);
-
-    setRecipient(null);
-    setAmount('0');
   }
 
   async function trySendTransaction() {
     if (!transaction) return;
     try {
       const txHash = await sendTransaction(transaction, connection);
-      if (txHash) setTxHash(txHash);
+      if (txHash) {
+        setTxHash(txHash);
+
+        if (!publicKey || !recipient) return;
+        const body = {
+          sender: publicKey.toString(),
+          recipient,
+          amount,
+          currency,
+          hash: txHash,
+        };
+
+        await fetch(`${SERVER}tx`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body),
+        });
+      }
     } catch (e) {
       console.error(e);
     }
@@ -74,8 +90,8 @@ export default function Transfer() {
 
   return (
     <div>
-      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} value={recipient?.toString()} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' value={amount} />
+      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
+      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' />
       <label>Currency: </label>
       <select onChange={(e) => setCurrency(e.target.value)}>
         <option value='sol'>SOL</option>

@@ -20,6 +20,10 @@ const TransactionSchema = new Schema(
       required: true,
       enum: ['sol', 'usdc'],
     },
+    hash: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
