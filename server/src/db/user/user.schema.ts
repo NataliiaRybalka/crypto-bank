@@ -6,7 +6,7 @@ const UserSchema = new Schema(
     account: {
       type: String,
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

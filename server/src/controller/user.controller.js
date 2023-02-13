@@ -8,7 +8,7 @@ var _walletAdapterBase = require("@solana/wallet-adapter-base");
 var _web = require("@solana/web3.js");
 var _splToken = require("@solana/spl-token");
 var _bignumber = _interopRequireDefault(require("bignumber.js"));
-var _user = _interopRequireDefault(require("../db/user.schema"));
+var _user = _interopRequireDefault(require("../db/user/user.schema"));
 var _addresses = require("../lib/addresses");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const login = async (req, res) => {
