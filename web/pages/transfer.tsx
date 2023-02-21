@@ -92,15 +92,23 @@ export default function Transfer() {
   // const amount = useMemo(() => calculatePrice(router.query), [router.query]);
 
   let url: URL;
-  if (recipient) {
-    const urlParams: TransferRequestURLFields = {
-      recipient: new PublicKey(recipient),
-      splToken: usdcAddress,
-      amount: new BigNumber(amount),
-      reference,
-    };
-    
-    url = encodeURL(urlParams);
+  if (recipient && confirm === 'qr') {
+    if (currency === 'sol') {
+      const urlParams: TransferRequestURLFields = {
+        recipient: new PublicKey(recipient),
+        amount: new BigNumber(amount),
+        reference,
+      };
+      url = encodeURL(urlParams);
+    } else if (currency === 'usdc') {
+      const urlParams: TransferRequestURLFields = {
+        recipient: new PublicKey(recipient),
+        splToken: usdcAddress,
+        amount: new BigNumber(amount),
+        reference,
+      };
+      url = encodeURL(urlParams);
+    }
   }
 
   useEffect(() => {
@@ -134,7 +142,7 @@ export default function Transfer() {
         <option value='qr'>qr-code</option>
       </select>
 
-      <button onClick={getTransaction}>confirm</button>
+      {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
 
       {(transaction && !txHash) && <p>Please approve the transaction using your wallet</p>}
       {txHash && <p>Your transaction was successful</p>}
@@ -143,5 +151,3 @@ export default function Transfer() {
     </div>
   )
 }
-
-// 89D7KBRL4xnfotkdVojgCmWNNp6wpqBqaufSHwUNuoMu
