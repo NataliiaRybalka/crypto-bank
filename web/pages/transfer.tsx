@@ -1,17 +1,24 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
-import { SERVER } from '../lib/constants';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection } from '@solana/web3.js';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { createQR, encodeURL, findReference, FindReferenceError, TransactionRequestURLFields } from '@solana/pay';
+import { SERVER, SERVER_NGROK } from '../lib/constants';
 
 export default function Transfer() {
-  const { connection } = useConnection();
+  const network = WalletAdapterNetwork.Devnet;
+  const endpoint = clusterApiUrl(network);
+  const connection = new Connection(endpoint);
   const { publicKey, sendTransaction } = useWallet();
 
   const [transaction, setTransaction] = useState<Transaction | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
-  const [amount, setAmount] = useState<string>('0');
+  const [isTx, setIsTx] = useState<boolean>(false);
+  const [amount, setAmount] = useState<number>(0.00001);
   const [currency, setCurrency] = useState<string>('sol');
   const [recipient, setRecipient] = useState<PublicKey | null | string>(null);
+  const [confirm, setConfirm] = useState<string>('phantom');
+
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const searchParams = new URLSearchParams();
   const reference = useMemo(() => Keypair.generate().publicKey, []);
@@ -20,7 +27,7 @@ export default function Transfer() {
   async function getTransaction() {
     if (!publicKey || !recipient) return;
 
-    searchParams.append('amount', amount);
+    searchParams.append('amount', amount.toString());
     searchParams.append('currency', currency);
     searchParams.append('recipient', recipient?.toString());
 
@@ -28,7 +35,7 @@ export default function Transfer() {
       account: publicKey.toString(),
     };
 
-    const response = await fetch(`${SERVER}user/transfer?${searchParams.toString()}`, {
+    const response = await fetch(`${SERVER}tx/transfer?${searchParams.toString()}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -50,27 +57,7 @@ export default function Transfer() {
   async function trySendTransaction() {
     if (!transaction) return;
     try {
-      const txHash = await sendTransaction(transaction, connection);
-      if (txHash) {
-        setTxHash(txHash);
-
-        if (!publicKey || !recipient) return;
-        const body = {
-          sender: publicKey.toString(),
-          recipient,
-          amount,
-          currency,
-          hash: txHash,
-        };
-
-        await fetch(`${SERVER}tx`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(body),
-        });
-      }
+      await sendTransaction(transaction, connection);
     } catch (e) {
       console.error(e);
     }
@@ -79,6 +66,41 @@ export default function Transfer() {
   useEffect(() => {
     trySendTransaction();
   }, [transaction]);
+
+  let url: URL;  
+  if (publicKey && recipient && confirm === 'qr') {
+    searchParams.append('amount', amount.toString());
+    searchParams.append('currency', currency);
+    searchParams.append('recipient', recipient.toString());
+    searchParams.append('account', publicKey.toString());
+
+    const apiUrl = `${SERVER_NGROK}tx/transfer?${searchParams.toString()}`;    
+    const urlParams: TransactionRequestURLFields = {
+      link: new URL(apiUrl),
+    };
+    url = encodeURL(urlParams);
+  }
+
+  useEffect(() => {
+    const qr = createQR(url, 512, 'transparent')
+    if (qrRef.current && amount > 0 && confirm === 'qr') {
+      qrRef.current.innerHTML = ''
+      qr.append(qrRef.current)
+    };
+  });
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' });
+        if (signatureInfo) setIsTx(true);
+      } catch (e) {
+        if (e instanceof FindReferenceError) return;
+        console.error('Unknown error', e)
+      }
+    }, 500)
+    return () => clearInterval(interval);
+  }, []);
 
   if (!publicKey) {
     return (
@@ -91,17 +113,25 @@ export default function Transfer() {
   return (
     <div>
       <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' />
+      <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
       <label>Currency: </label>
       <select onChange={(e) => setCurrency(e.target.value)}>
         <option value='sol'>SOL</option>
         <option value='usdc'>USDC</option>
       </select>
 
-      <button onClick={getTransaction}>confirm</button>
+      <label>Confirm via: </label>
+      <select onChange={(e) => setConfirm(e.target.value)}>
+        <option value='phantom'>Phantom extension</option>
+        <option value='qr'>QR-code</option>
+      </select>
 
-      {(transaction && !txHash) && <p>Please approve the transaction using your wallet</p>}
-      {txHash && <p>Your transaction was successful</p>}
+      {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
+
+      {(transaction && !isTx) && <p>Please approve the transaction using your wallet</p>}
+      {isTx && <p>Your transaction was successful</p>}
+
+      <div ref={qrRef} />
     </div>
   )
 }
