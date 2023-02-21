@@ -3,7 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.login = exports.getUser = void 0;
+exports.login = exports.getUser = exports.getBalance = void 0;
+var _walletAdapterBase = require("@solana/wallet-adapter-base");
+var _web = require("@solana/web3.js");
 var _user = _interopRequireDefault(require("../db/user.schema"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const login = async (req, res) => {
@@ -53,3 +55,20 @@ const getUser = async (req, res) => {
   });
 };
 exports.getUser = getUser;
+const getBalance = async (req, res) => {
+  const {
+    account
+  } = req.params;
+  if (!account) {
+    res.status(400).json({
+      error: 'Account is not specified'
+    });
+    return;
+  }
+  const network = _walletAdapterBase.WalletAdapterNetwork.Devnet;
+  const endpoint = (0, _web.clusterApiUrl)(network);
+  const connection = new _web.Connection(endpoint);
+  const balance = await connection.getBalance(new _web.PublicKey(account));
+  res.status(200).json(balance / _web.LAMPORTS_PER_SOL);
+};
+exports.getBalance = getBalance;

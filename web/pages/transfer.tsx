@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
@@ -43,14 +43,14 @@ export default function Transfer() {
       body: JSON.stringify(body),
     });
 
-    const json = await response.json();
+    const data = await response.json();
 
     if (response.status !== 200) {
-      console.error(json);
+      console.error(data);
       return;
     }
 
-    const transaction = Transaction.from(Buffer.from(json.transaction, 'base64'));
+    const transaction = Transaction.from(Buffer.from(data.transaction, 'base64'));
     setTransaction(transaction);
   }
 
