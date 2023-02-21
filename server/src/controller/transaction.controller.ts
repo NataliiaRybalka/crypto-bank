@@ -3,24 +3,7 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
 import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js'
 import { getMint, getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token';
 import BigNumber from 'bignumber.js';
-import { ITransaction } from '../db/transaction/transaction.types';
-import TransactionSchema from '../db/transaction/transaction.schema';
 import { usdcAddress } from '../lib/addresses';
-
-export const saveTx = async (req: Request, res: Response) => {
-  const { sender, recipient, amount, currency, hash } = req.body as ITransaction;
-  if (!sender || !recipient || !amount || !currency || !hash) {
-    res.status(400).json({error: 'No params provided'});
-    return;
-  }
-
-  try {
-    const tx = await TransactionSchema.create({ sender, recipient, amount, currency, hash });
-    res.status(200).json(tx);
-  } catch (e) {
-    res.status(500).json('Something went wrong');
-  }
-};
 
 export const postTransfer = async (req: Request, res: Response) => {
   const {recipient, currency, amount, reference} = req.query;
@@ -39,7 +22,6 @@ export const postTransfer = async (req: Request, res: Response) => {
     const endpoint = clusterApiUrl(network);
     const connection = new Connection(endpoint);
 
-    // sol
     const buyerPublicKey = new PublicKey(account);
     const shopPublicKey = new PublicKey(recipient);
 
@@ -51,7 +33,7 @@ export const postTransfer = async (req: Request, res: Response) => {
     });
 
     let transferInstruction;
-    if (currency === 'sol') {
+    if (currency === 'sol') {      
       transferInstruction = SystemProgram.transfer({
         fromPubkey: buyerPublicKey,
         lamports: sum.multipliedBy(LAMPORTS_PER_SOL).toNumber(),
@@ -62,8 +44,8 @@ export const postTransfer = async (req: Request, res: Response) => {
         pubkey: new PublicKey(reference),
         isSigner: false,
         isWritable: false,
-      });
-    } else if (currency === 'usdc') {      
+      });      
+    } else if (currency === 'usdc') {            
       const buyerUsdcAddress = await getAssociatedTokenAddress(usdcAddress, buyerPublicKey);
       const shopUsdcAddress = await getAssociatedTokenAddress(usdcAddress, shopPublicKey);
       const usdcMint = await getMint(connection, usdcAddress);
@@ -81,7 +63,7 @@ export const postTransfer = async (req: Request, res: Response) => {
         pubkey: new PublicKey(reference),
         isSigner: false,
         isWritable: false,
-      });
+      });      
     }
 
     if (!transferInstruction) throw new Error('Wrong currency');

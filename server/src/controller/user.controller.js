@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.login = exports.getUser = void 0;
-var _user = _interopRequireDefault(require("../db/user/user.schema"));
+var _user = _interopRequireDefault(require("../db/user.schema"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 const login = async (req, res) => {
   const {

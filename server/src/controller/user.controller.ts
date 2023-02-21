@@ -1,5 +1,5 @@
 import {Request, Response} from 'express';
-import UserSchema from '../db/user/user.schema';
+import UserSchema from '../db/user.schema';
 
 export const login = async (req: Request, res: Response) => {
   const { account } = req.params;
@@ -19,7 +19,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const { account } = req.query;
+  const {account} = req.query;  
   if (!account) {
     res.status(400).json({error: 'Account is not specified'});
     return;

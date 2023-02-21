@@ -20,7 +20,6 @@ app.use(bodyParser({extended: true}));
 app.get('/login/:account', login);
 app.get('/tx/transfer', getUser);
 app.post('/tx/transfer', postTransfer);
-app.post('/tx', saveTx);
 
 server.listen(process.env.PORT, () => {
   console.log(`Server started at ${process.env.PORT} port.`);
