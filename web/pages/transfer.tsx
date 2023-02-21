@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { createQR, encodeURL, TransactionRequestURLFields } from '@solana/pay';
-import { SERVER } from '../lib/constants';
+import { createQR, encodeURL, findReference, FindReferenceError, TransactionRequestURLFields } from '@solana/pay';
+import { SERVER, SERVER_NGROK } from '../lib/constants';
 
 export default function Transfer() {
   const network = WalletAdapterNetwork.Devnet;
@@ -12,7 +12,7 @@ export default function Transfer() {
   const { publicKey, sendTransaction } = useWallet();
 
   const [transaction, setTransaction] = useState<Transaction | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [isTx, setIsTx] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0.00001);
   const [currency, setCurrency] = useState<string>('sol');
   const [recipient, setRecipient] = useState<PublicKey | null | string>(null);
@@ -74,7 +74,7 @@ export default function Transfer() {
     searchParams.append('recipient', recipient.toString());
     searchParams.append('account', publicKey.toString());
 
-    const apiUrl = `${SERVER}tx/transfer?${searchParams.toString()}`;    
+    const apiUrl = `${SERVER_NGROK}tx/transfer?${searchParams.toString()}`;    
     const urlParams: TransactionRequestURLFields = {
       link: new URL(apiUrl),
     };
@@ -88,6 +88,19 @@ export default function Transfer() {
       qr.append(qrRef.current)
     };
   });
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' });
+        if (signatureInfo) setIsTx(true);
+      } catch (e) {
+        if (e instanceof FindReferenceError) return;
+        console.error('Unknown error', e)
+      }
+    }, 500)
+    return () => clearInterval(interval);
+  }, []);
 
   if (!publicKey) {
     return (
@@ -115,8 +128,8 @@ export default function Transfer() {
 
       {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
 
-      {(transaction && !txHash) && <p>Please approve the transaction using your wallet</p>}
-      {txHash && <p>Your transaction was successful</p>}
+      {(transaction && !isTx) && <p>Please approve the transaction using your wallet</p>}
+      {isTx && <p>Your transaction was successful</p>}
 
       <div ref={qrRef} />
     </div>
