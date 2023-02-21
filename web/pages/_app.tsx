@@ -1,4 +1,3 @@
-import React from 'react';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';

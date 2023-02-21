@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { SERVER } from '../lib/constants';
 import Transfer from './transfer';
+import Balance from './balance';
 
 export default function Login() {
   const { publicKey } = useWallet();
@@ -20,6 +21,7 @@ export default function Login() {
     <div>
       <WalletMultiButton />
       <Transfer />
+      <Balance />
     </div>
   )
 }
