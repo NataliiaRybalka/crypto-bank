@@ -1,17 +1,26 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Keypair, PublicKey, Transaction } from '@solana/web3.js';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection, } from '@solana/web3.js';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { createQR, encodeURL, TransferRequestURLFields } from '@solana/pay';
+import BigNumber from 'bignumber.js';
 import { SERVER } from '../lib/constants';
+import { usdcAddress } from '../lib/addresses';
 
 export default function Transfer() {
-  const { connection } = useConnection();
+  const network = WalletAdapterNetwork.Devnet;
+  const endpoint = clusterApiUrl(network);
+  const connection = new Connection(endpoint);
   const { publicKey, sendTransaction } = useWallet();
 
   const [transaction, setTransaction] = useState<Transaction | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [amount, setAmount] = useState<string>('0.00001');
+  const [amount, setAmount] = useState<number>(0.00001);
   const [currency, setCurrency] = useState<string>('sol');
   const [recipient, setRecipient] = useState<PublicKey | null | string>(null);
+  const [confirm, setConfirm] = useState<string>('phantom');
+
+  const qrRef = useRef<HTMLDivElement>(null);
 
   const searchParams = new URLSearchParams();
   const reference = useMemo(() => Keypair.generate().publicKey, []);
@@ -20,7 +29,7 @@ export default function Transfer() {
   async function getTransaction() {
     if (!publicKey || !recipient) return;
 
-    searchParams.append('amount', amount);
+    searchParams.append('amount', amount.toString());
     searchParams.append('currency', currency);
     searchParams.append('recipient', recipient?.toString());
 
@@ -80,6 +89,28 @@ export default function Transfer() {
     trySendTransaction();
   }, [transaction]);
 
+  // const amount = useMemo(() => calculatePrice(router.query), [router.query]);
+
+  let url: URL;
+  if (recipient) {
+    const urlParams: TransferRequestURLFields = {
+      recipient: new PublicKey(recipient),
+      splToken: usdcAddress,
+      amount: new BigNumber(amount),
+      reference,
+    };
+    
+    url = encodeURL(urlParams);
+  }
+
+  useEffect(() => {
+    const qr = createQR(url, 512, 'transparent')
+    if (qrRef.current && amount > 0 && confirm === 'qr') {
+      qrRef.current.innerHTML = ''
+      qr.append(qrRef.current)
+    }
+  });
+
   if (!publicKey) {
     return (
       <div>
@@ -91,17 +122,26 @@ export default function Transfer() {
   return (
     <div>
       <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(e.target.value)} min='0' value={amount} />
+      <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
       <label>Currency: </label>
       <select onChange={(e) => setCurrency(e.target.value)}>
         <option value='sol'>SOL</option>
         <option value='usdc'>USDC</option>
       </select>
 
+      <select onChange={(e) => setConfirm(e.target.value)}>
+        <option value='phantom'>Phantom extension</option>
+        <option value='qr'>qr-code</option>
+      </select>
+
       <button onClick={getTransaction}>confirm</button>
 
       {(transaction && !txHash) && <p>Please approve the transaction using your wallet</p>}
       {txHash && <p>Your transaction was successful</p>}
+
+      <div ref={qrRef} />
     </div>
   )
 }
+
+// 89D7KBRL4xnfotkdVojgCmWNNp6wpqBqaufSHwUNuoMu
