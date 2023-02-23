@@ -42,3 +42,16 @@ code {
   font-weight: bold;
   color: #008000;
 }
+
+.transactionTable {
+  width: 100%;
+  margin-bottom: 50px;
+}
+td {
+  border: 1px solid #000000;
+}
+thead > tr > td {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}

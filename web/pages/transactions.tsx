@@ -40,14 +40,14 @@ export default function Transactions() {
 
       <div>
         SOL account:
-        <table>
+        <table className='transactionTable'>
           <thead>
             <tr>
-              <td>from</td>
-              <td>to</td>
-              <td>amount</td>
-              <td>currency</td>
-              <td>date</td>
+              <td>From</td>
+              <td>To</td>
+              <td>Amount</td>
+              <td>Currency</td>
+              <td>Date</td>
             </tr>
           </thead>
           <tbody>
@@ -66,14 +66,14 @@ export default function Transactions() {
 
       <div>
         USDC account:
-        <table>
+        <table className='transactionTable'>
           <thead>
             <tr>
-              <td>from</td>
-              <td>to</td>
-              <td>amount</td>
-              <td>currency</td>
-              <td>date</td>
+              <td>From</td>
+              <td>To</td>
+              <td>Amount</td>
+              <td>Currency</td>
+              <td>Date</td>
             </tr>
           </thead>
           <tbody>
