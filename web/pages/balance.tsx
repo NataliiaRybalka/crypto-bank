@@ -27,9 +27,9 @@ export default function Balance() {
   }, [publicKey]);
 
   return (
-    <div>
-      Balance: {sol} SOL
-      Balance: {usdc} USDC
+    <div className='balance'>
+      <p>Balance: {sol} SOL</p>
+      <p>Balance: {usdc} USDC</p>
     </div>
   )
 }

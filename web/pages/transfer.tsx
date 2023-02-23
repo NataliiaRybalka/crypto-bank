@@ -113,7 +113,7 @@ export default function Transfer() {
   return (
     <div className='transferTable'>
       <div>
-        <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
+        <label>Recipient: </label><input type='text' className='recipientInput' onChange={(e) => setRecipient(e.target.value)} />
       </div>
       <div>
         <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
@@ -134,7 +134,7 @@ export default function Transfer() {
         </select>
       </div>
 
-      {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
+      {confirm === 'phantom' && <button className='transferButton' onClick={getTransaction}>confirm</button>}
 
       {(transaction && !isTx) && <p className='approveAlert'>Please approve the transaction using your wallet</p>}
       {isTx && <p className='confirmAlert'>Your transaction was successful</p>}
