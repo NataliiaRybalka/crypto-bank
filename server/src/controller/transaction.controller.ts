@@ -48,14 +48,14 @@ export const postTransfer = async (req: Request, res: Response) => {
         isWritable: false,
       });      
     } else if (currency === 'usdc') {            
-      const buyerUsdcAddress = await getAssociatedTokenAddress(usdcAddress, buyerPublicKey);
-      const shopUsdcAddress = await getAssociatedTokenAddress(usdcAddress, shopPublicKey);
+      const senderUsdcAddress = await getAssociatedTokenAddress(usdcAddress, buyerPublicKey);
+      const recipientUsdcAddress = await getAssociatedTokenAddress(usdcAddress, shopPublicKey);
       const usdcMint = await getMint(connection, usdcAddress);
 
       transferInstruction = createTransferCheckedInstruction(
-        buyerUsdcAddress,
+        senderUsdcAddress,
         usdcAddress,
-        shopUsdcAddress,
+        recipientUsdcAddress,
         buyerPublicKey,
         sum.toNumber() * (10 ** (await usdcMint).decimals),
         usdcMint.decimals,

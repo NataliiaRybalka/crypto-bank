@@ -56,10 +56,10 @@ const postTransfer = async (req, res) => {
         isWritable: false
       });
     } else if (currency === 'usdc') {
-      const buyerUsdcAddress = await (0, _splToken.getAssociatedTokenAddress)(_addresses.usdcAddress, buyerPublicKey);
-      const shopUsdcAddress = await (0, _splToken.getAssociatedTokenAddress)(_addresses.usdcAddress, shopPublicKey);
+      const senderUsdcAddress = await (0, _splToken.getAssociatedTokenAddress)(_addresses.usdcAddress, buyerPublicKey);
+      const recipientUsdcAddress = await (0, _splToken.getAssociatedTokenAddress)(_addresses.usdcAddress, shopPublicKey);
       const usdcMint = await (0, _splToken.getMint)(connection, _addresses.usdcAddress);
-      transferInstruction = (0, _splToken.createTransferCheckedInstruction)(buyerUsdcAddress, _addresses.usdcAddress, shopUsdcAddress, buyerPublicKey, sum.toNumber() * 10 ** (await usdcMint).decimals, usdcMint.decimals);
+      transferInstruction = (0, _splToken.createTransferCheckedInstruction)(senderUsdcAddress, _addresses.usdcAddress, recipientUsdcAddress, buyerPublicKey, sum.toNumber() * 10 ** (await usdcMint).decimals, usdcMint.decimals);
       transferInstruction.keys.push({
         pubkey: new _web.PublicKey(reference),
         isSigner: false,

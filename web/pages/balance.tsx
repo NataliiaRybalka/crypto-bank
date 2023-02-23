@@ -5,7 +5,8 @@ import { SERVER } from '../lib/constants';
 export default function Balance() {
   const { publicKey } = useWallet();
 
-  const [balance, setBalance] = useState(0);
+  const [sol, setSol] = useState(0);
+  const [usdc, setUsdc] = useState(0);
 
   async function getBalance() {
     if (publicKey) {
@@ -16,7 +17,8 @@ export default function Balance() {
         return;
       }
       
-      setBalance(data);
+      setSol(data.sol);
+      setUsdc(data.usdc);
     }
   }
 
@@ -26,7 +28,8 @@ export default function Balance() {
 
   return (
     <div>
-      Balance: {balance} SOL
+      Balance: {sol} SOL
+      Balance: {usdc} USDC
     </div>
   )
 }
