@@ -111,25 +111,33 @@ export default function Transfer() {
   }
 
   return (
-    <div>
-      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
-      <label>Currency: </label>
-      <select onChange={(e) => setCurrency(e.target.value)}>
-        <option value='sol'>SOL</option>
-        <option value='usdc'>USDC</option>
-      </select>
+    <div className='transferTable'>
+      <div>
+        <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
+      </div>
+      <div>
+        <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
+      </div>
+      <div>
+        <label>Currency: </label>
+        <select onChange={(e) => setCurrency(e.target.value)}>
+          <option value='sol'>SOL</option>
+          <option value='usdc'>USDC</option>
+        </select>
+      </div>
 
-      <label>Confirm via: </label>
-      <select onChange={(e) => setConfirm(e.target.value)}>
-        <option value='phantom'>Phantom extension</option>
-        <option value='qr'>QR-code</option>
-      </select>
+      <div>
+        <label>Confirm via: </label>
+        <select onChange={(e) => setConfirm(e.target.value)}>
+          <option value='phantom'>Phantom extension</option>
+          <option value='qr'>QR-code</option>
+        </select>
+      </div>
 
       {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
 
-      {(transaction && !isTx) && <p>Please approve the transaction using your wallet</p>}
-      {isTx && <p>Your transaction was successful</p>}
+      {(transaction && !isTx) && <p className='approveAlert'>Please approve the transaction using your wallet</p>}
+      {isTx && <p className='confirmAlert'>Your transaction was successful</p>}
 
       <div ref={qrRef} />
     </div>

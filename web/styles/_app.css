@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  padding: 50px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -7,9 +8,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #282c34;
   color: #ffffff;
+  line-height: 1.5;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.transferTable {
+  margin: 30px 0;
+}
+
+.approveAlert {
+  font-size: 20px;
+  color: #ff0000;
+}
+.confirmAlert {
+  font-size: 20px;
+  color: #008000;
 }
