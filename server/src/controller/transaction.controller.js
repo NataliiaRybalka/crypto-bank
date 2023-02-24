@@ -7,11 +7,10 @@ exports.postTransfer = exports.getTx = exports.getTransactions = exports.getTran
 var _walletAdapterBase = require("@solana/wallet-adapter-base");
 var _web = require("@solana/web3.js");
 var _splToken = require("@solana/spl-token");
+var _solanaTransactionExtractor = require("solana-transaction-extractor");
 var _bignumber = _interopRequireDefault(require("bignumber.js"));
 var _addresses = require("../lib/addresses");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-// import { extract } from 'solana-transaction-extractor';
-
 const network = _walletAdapterBase.WalletAdapterNetwork.Devnet;
 const endpoint = (0, _web.clusterApiUrl)(network);
 const connection = new _web.Connection(endpoint);
@@ -100,16 +99,15 @@ const getTransactions = async (req, res) => {
   });
   const signaturesList = signatures.map(sign => sign.signature);
   const transactionsList = await connection.getParsedTransactions(signaturesList);
-  // const transactions = await Promise.all(
-  //   transactionsList.map((transactionData) => extract(transactionData)),
-  // );
-
-  // const transactionsSol = transactions.filter((tx) => tx.currency === 'sol');
-  // const transactionsUsdc = transactions.filter((tx) => tx.currency === 'usdc');
-
+  const transactions = await Promise.all(transactionsList.map(transactionData => {
+    if (transactionData === null) return;
+    return (0, _solanaTransactionExtractor.extract)(transactionData);
+  }));
+  const transactionsSol = transactions.filter(tx => tx && tx.currency === 'sol');
+  const transactionsUsdc = transactions.filter(tx => tx && tx.currency === 'usdc');
   res.status(200).json({
-    transactionsSol: 'ok',
-    transactionsUsdc: 'ok'
+    transactionsSol,
+    transactionsUsdc
   });
 };
 exports.getTransactions = getTransactions;

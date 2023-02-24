@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, ParsedTransactionWithMeta } from '@solana/web3.js';
 import { getMint, getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token';
+import { extract } from 'solana-transaction-extractor';
 import BigNumber from 'bignumber.js';
 import { usdcAddress } from '../lib/addresses';
-
-// import { extract } from 'solana-transaction-extractor';
 
 const network = WalletAdapterNetwork.Devnet;
 const endpoint = clusterApiUrl(network);
@@ -96,17 +95,20 @@ export const getTransactions = async (req: Request, res: Response) => {
 
   const signatures = await connection.getSignaturesForAddress(new PublicKey(account), { limit });
   const signaturesList = signatures.map(sign => sign.signature);  
-  const transactionsList = await connection.getParsedTransactions(signaturesList);
-  // const transactions = await Promise.all(
-  //   transactionsList.map((transactionData) => extract(transactionData)),
-  // );
+  const transactionsList = await connection.getParsedTransactions(signaturesList);  
+  const transactions = await Promise.all(
+    transactionsList.map((transactionData: ParsedTransactionWithMeta | null) => {
+      if (transactionData === null) return;
+      return extract(transactionData);
+    })
+  );
 
-  // const transactionsSol = transactions.filter((tx) => tx.currency === 'sol');
-  // const transactionsUsdc = transactions.filter((tx) => tx.currency === 'usdc');
+  const transactionsSol = transactions.filter((tx) => tx && tx.currency === 'sol');
+  const transactionsUsdc = transactions.filter((tx) => tx && tx.currency === 'usdc');
 
   res.status(200).json({
-    transactionsSol: 'ok',
-    transactionsUsdc: 'ok',
+    transactionsSol,
+    transactionsUsdc,
   });
 };
 
