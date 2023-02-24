@@ -42,7 +42,7 @@ function Transactions() {
 
       <div>
         SOL account:
-        <table className='transactionTable'>
+        <table className='transactionsTable'>
           <thead>
             <tr>
               <td>From</td>
@@ -54,7 +54,7 @@ function Transactions() {
           </thead>
           <tbody>
             {!!transactionsSol.length && transactionsSol.map(tx => (
-              <tr onClick={() => router.push(`/transactions/${tx.signature}`)}>
+              <tr onClick={() => router.push(`/transactions/${tx.signature}`)} key={tx.signature}>
                 <td>{tx.from}</td>
                 <td>{tx.to}</td>
                 <td>{tx.amount}</td>
@@ -68,7 +68,7 @@ function Transactions() {
 
       <div>
         USDC account:
-        <table className='transactionTable'>
+        <table className='transactionsTable'>
           <thead>
             <tr>
               <td>From</td>
@@ -80,7 +80,7 @@ function Transactions() {
           </thead>
           <tbody>
             {!!transactionsUsdc.length && transactionsUsdc.map(tx => (
-              <tr>
+              <tr onClick={() => router.push(`/transactions/${tx.signature}`)} key={tx.signature}>
                 <td>{tx.from}</td>
                 <td>{tx.to}</td>
                 <td>{tx.amount}</td>

@@ -51,15 +51,26 @@ code {
   color: #008000;
 }
 
-.transactionTable {
+.transactionsTable {
   width: 100%;
   margin-bottom: 50px;
 }
-td {
+.transactionsTable > thead > tr > td,
+.transactionsTable > tbody > tr > td,
+.transactionTable > tbody > tr > td,
+.transactionTable > tbody > tr > td > table > tr > td {
   border: 1px solid #000000;
 }
 thead > tr > td {
   text-align: center;
   font-size: 18px;
   font-weight: bold;
+}
+
+.transactionTable > tbody > tr > td,
+.transactionTable > tbody > tr > td > table > tr > td {
+  font-size: 15px;
+}
+.fieldsMapData {
+  display: block;
 }

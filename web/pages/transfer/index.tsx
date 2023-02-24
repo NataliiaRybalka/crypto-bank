@@ -5,7 +5,7 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { createQR, encodeURL, findReference, FindReferenceError, TransactionRequestURLFields } from '@solana/pay';
 import { SERVER, SERVER_NGROK } from '../../lib/constants';
 
-export default function Transfer() {
+function Transfer() {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = clusterApiUrl(network);
   const connection = new Connection(endpoint);
@@ -144,4 +144,4 @@ export default function Transfer() {
   )
 }
 
-// 89D7KBRL4xnfotkdVojgCmWNNp6wpqBqaufSHwUNuoMu
+export default Transfer;

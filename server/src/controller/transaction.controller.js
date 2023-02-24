@@ -124,9 +124,6 @@ const getTransaction = async (req, res) => {
   const tx = await await connection.getTransaction(hash, {
     maxSupportedTransactionVersion: 0
   });
-  res.status(200).json({
-    tx
-  });
-  return tx;
+  res.status(200).json(tx);
 };
 exports.getTransaction = getTransaction;
