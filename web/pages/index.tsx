@@ -3,9 +3,7 @@ import Link from 'next/link';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { SERVER } from '../lib/constants';
-import Transfer from './transfer';
 import Balance from './balance';
-import Transactions from './transactions';
 
 function Login() {
   const { publicKey } = useWallet();
