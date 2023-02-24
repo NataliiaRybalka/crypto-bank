@@ -16,6 +16,14 @@ code {
     monospace;
 }
 
+.link {
+  color: #ffffff;
+  margin-right: 30px;
+  font-size: 20px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .transferTable {
   margin: 30px 0;
   line-height: 1.7;

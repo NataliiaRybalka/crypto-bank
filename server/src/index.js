@@ -20,13 +20,10 @@ app.use(bodyParser({extended: true}));
 app.get('/balance/:account', getBalance);
 app.get('/login/:account', login);
 app.get('/transactions', getTransactions);
-app.get('/transaction/:hash', getTransaction);
+app.get('/transactions/:hash', getTransaction);
 app.get('/tx/transfer', getUser);
 app.post('/tx/transfer', postTransfer);
 
-server.listen(4000, () => {
-  console.log(`Server started at 4000 port.`);
+server.listen(process.env.PORT, () => {
+  console.log(`Server started at ${process.env.PORT} port.`);
 });
-// server.listen(process.env.PORT, () => {
-//   console.log(`Server started at ${process.env.PORT} port.`);
-// });

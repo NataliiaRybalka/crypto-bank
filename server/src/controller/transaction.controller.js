@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.postTransfer = exports.getTx = exports.getTransactions = exports.getTransaction = void 0;
+exports.postTransfer = exports.getTransactions = exports.getTransaction = void 0;
 var _walletAdapterBase = require("@solana/wallet-adapter-base");
 var _web = require("@solana/web3.js");
 var _splToken = require("@solana/spl-token");
@@ -121,15 +121,12 @@ const getTransaction = async (req, res) => {
     });
     return;
   }
-  const tx = await getTx(hash);
+  const tx = await await connection.getTransaction(hash, {
+    maxSupportedTransactionVersion: 0
+  });
   res.status(200).json({
     tx
   });
   return tx;
 };
 exports.getTransaction = getTransaction;
-const getTx = async hash => await connection.getTransaction(hash, {
-  maxSupportedTransactionVersion: 0
-});
-exports.getTx = getTx;
-const getTransactionCount = async () => await connection.getTransactionCount();

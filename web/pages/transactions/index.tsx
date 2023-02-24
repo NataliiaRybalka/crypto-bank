@@ -1,12 +1,14 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useState } from 'react';
-import { SERVER } from '../lib/constants';
+import { useRouter } from 'next/router';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { SERVER } from '../../lib/constants';
 
-export default function Transactions() {
+function Transactions() {
+  const router = useRouter();
   const { publicKey } = useWallet();
 
-  const [transactionsSol, setTransactionsSol] = useState([]);
-  const [transactionsUsdc, setTransactionsUsdc] = useState([]);
+  const [transactionsSol, setTransactionsSol] = useState<any[]>([]);
+  const [transactionsUsdc, setTransactionsUsdc] = useState<any[]>([]);
   const [limit, setLimit] = useState('10');
 
   async function getTransactions() {
@@ -17,9 +19,9 @@ export default function Transactions() {
         console.error(data);
         return;
       }
-      
-      // setTransactionsSol(data.transactionsSol);
-      // setTransactionsUsdc(data.transactionsUsdc);
+
+      setTransactionsSol(data.transactionsSol);
+      setTransactionsUsdc(data.transactionsUsdc);
     }
   }
 
@@ -51,15 +53,15 @@ export default function Transactions() {
             </tr>
           </thead>
           <tbody>
-            {transactionsSol.map(tx => {
-              <tr>
-                {/* <td>{tx.from}</td>
+            {!!transactionsSol.length && transactionsSol.map(tx => (
+              <tr onClick={() => router.push(`/transactions/${tx.signature}`)}>
+                <td>{tx.from}</td>
                 <td>{tx.to}</td>
                 <td>{tx.amount}</td>
                 <td>{tx.currency}</td>
-                <td>{tx.date}</td> */}
+                <td>{tx.date}</td>
               </tr>
-            })}
+            ))}
           </tbody>
         </table>
       </div>
@@ -77,18 +79,20 @@ export default function Transactions() {
             </tr>
           </thead>
           <tbody>
-            {transactionsUsdc.map(tx => {
+            {!!transactionsUsdc.length && transactionsUsdc.map(tx => (
               <tr>
-                {/* <td>{tx.from}</td>
+                <td>{tx.from}</td>
                 <td>{tx.to}</td>
                 <td>{tx.amount}</td>
                 <td>{tx.currency}</td>
-                <td>{tx.date}</td> */}
+                <td>{tx.date}</td>
               </tr>
-            })}
+            ))}
           </tbody>
         </table>
       </div>
     </div>
   )
 }
+
+export default Transactions;

@@ -118,14 +118,10 @@ export const getTransaction = async (req: Request, res: Response) => {
     res.status(400).json({error: 'No params provided'});
     return;
   }
-  const tx = await getTx(hash);
+  const tx = await await connection.getTransaction(hash, { maxSupportedTransactionVersion: 0 })
 
   res.status(200).json({
     tx,
   });
   return tx;
 };
-
-export const getTx = async (hash: string) => await connection.getTransaction(hash, { maxSupportedTransactionVersion: 0 });
-
-const getTransactionCount = async () => await connection.getTransactionCount();

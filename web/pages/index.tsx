@@ -7,8 +7,7 @@ import Transfer from './transfer';
 import Balance from './balance';
 import Transactions from './transactions';
 
-
-export default function Login() {
+function Login() {
   const { publicKey } = useWallet();
 
   useEffect(() => {
@@ -26,9 +25,18 @@ export default function Login() {
       <Balance />
 
       <div>
-        <Link href='/transfer'><Transfer /></Link>
-        <Link href='/transactions'><Transactions /></Link>
+        <Link href='/'>
+          <span  className='link'>Home</span>
+        </Link>
+        <Link href='/transfer'>
+          <span  className='link'>Transfer</span>
+        </Link>
+        <Link href='/transactions'>
+          <span className='link'>Transactions</span>
+        </Link>
       </div>
     </div>
   )
 }
+
+export default Login;

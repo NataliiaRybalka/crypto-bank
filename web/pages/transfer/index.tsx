@@ -3,7 +3,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { createQR, encodeURL, findReference, FindReferenceError, TransactionRequestURLFields } from '@solana/pay';
-import { SERVER, SERVER_NGROK } from '../lib/constants';
+import { SERVER, SERVER_NGROK } from '../../lib/constants';
 
 export default function Transfer() {
   const network = WalletAdapterNetwork.Devnet;
