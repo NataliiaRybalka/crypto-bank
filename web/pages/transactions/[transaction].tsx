@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { SERVER } from '../../lib/constants';
-import MetaFields from './metaFields';
+import MetaFields from '../../components/metaFields';
 
 function Transaction() {
   const router = useRouter();

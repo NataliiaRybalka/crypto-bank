@@ -1,4 +1,4 @@
-import InsideMetaFields from "./insideMetaFields";
+import InsideMetaFields from './insideMetaFields';
 
 // @ts-ignore
 function MetaFields({ fields }): any {
