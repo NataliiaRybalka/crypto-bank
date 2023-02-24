@@ -1,9 +1,14 @@
-import {Request, Response} from 'express';
-import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL } from '@solana/web3.js'
+import { Request, Response } from 'express';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { clusterApiUrl, Connection, PublicKey, Transaction, SystemProgram, LAMPORTS_PER_SOL, ParsedTransactionWithMeta } from '@solana/web3.js';
 import { getMint, getAssociatedTokenAddress, createTransferCheckedInstruction } from '@solana/spl-token';
+import { extract } from 'solana-transaction-extractor';
 import BigNumber from 'bignumber.js';
 import { usdcAddress } from '../lib/addresses';
+
+const network = WalletAdapterNetwork.Devnet;
+const endpoint = clusterApiUrl(network);
+const connection = new Connection(endpoint);
 
 export const postTransfer = async (req: Request, res: Response) => {
   const {recipient, currency, amount, reference} = req.query;
@@ -18,10 +23,6 @@ export const postTransfer = async (req: Request, res: Response) => {
   if (sum.toNumber() === 0) return;
 
   try {
-    const network = WalletAdapterNetwork.Devnet;
-    const endpoint = clusterApiUrl(network);
-    const connection = new Connection(endpoint);
-
     const buyerPublicKey = new PublicKey(account);
     const shopPublicKey = new PublicKey(recipient);
 
@@ -46,14 +47,14 @@ export const postTransfer = async (req: Request, res: Response) => {
         isWritable: false,
       });      
     } else if (currency === 'usdc') {            
-      const buyerUsdcAddress = await getAssociatedTokenAddress(usdcAddress, buyerPublicKey);
-      const shopUsdcAddress = await getAssociatedTokenAddress(usdcAddress, shopPublicKey);
+      const senderUsdcAddress = await getAssociatedTokenAddress(usdcAddress, buyerPublicKey);
+      const recipientUsdcAddress = await getAssociatedTokenAddress(usdcAddress, shopPublicKey);
       const usdcMint = await getMint(connection, usdcAddress);
 
       transferInstruction = createTransferCheckedInstruction(
-        buyerUsdcAddress,
+        senderUsdcAddress,
         usdcAddress,
-        shopUsdcAddress,
+        recipientUsdcAddress,
         buyerPublicKey,
         sum.toNumber() * (10 ** (await usdcMint).decimals),
         usdcMint.decimals,
@@ -82,4 +83,42 @@ export const postTransfer = async (req: Request, res: Response) => {
     res.status(500).json({error: 'error creating transaction'});
     return;
   }
+};
+
+export const getTransactions = async (req: Request, res: Response) => {
+  const { account } = req.query;
+  let limit = Number(req.query.limit) || 10;
+  if (!account) {
+    res.status(400).json({error: 'No params provided'});
+    return;
+  }
+
+  const signatures = await connection.getSignaturesForAddress(new PublicKey(account), { limit });
+  const signaturesList = signatures.map(sign => sign.signature);  
+  const transactionsList = await connection.getParsedTransactions(signaturesList);  
+  const transactions = await Promise.all(
+    transactionsList.map((transactionData: ParsedTransactionWithMeta | null) => {
+      if (transactionData === null) return;
+      return extract(transactionData);
+    })
+  );
+
+  const transactionsSol = transactions.filter((tx) => tx && tx.currency === 'sol');
+  const transactionsUsdc = transactions.filter((tx) => tx && tx.currency === 'usdc');
+
+  res.status(200).json({
+    transactionsSol,
+    transactionsUsdc,
+  });
+};
+
+export const getTransaction = async (req: Request, res: Response) => {
+  const { hash } = req.params;
+  if (!hash) {
+    res.status(400).json({error: 'No params provided'});
+    return;
+  }
+  const tx = await await connection.getTransaction(hash, { maxSupportedTransactionVersion: 0 })
+
+  res.status(200).json(tx);
 };

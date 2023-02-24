@@ -1,11 +1,12 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useEffect, useState } from 'react';
-import { SERVER } from '../lib/constants';
+import { SERVER } from '../../lib/constants';
 
-export default function Balance() {
+function Balance() {
   const { publicKey } = useWallet();
 
-  const [balance, setBalance] = useState(0);
+  const [sol, setSol] = useState(0);
+  const [usdc, setUsdc] = useState(0);
 
   async function getBalance() {
     if (publicKey) {
@@ -16,7 +17,8 @@ export default function Balance() {
         return;
       }
       
-      setBalance(data);
+      setSol(data.sol);
+      setUsdc(data.usdc);
     }
   }
 
@@ -25,8 +27,11 @@ export default function Balance() {
   }, [publicKey]);
 
   return (
-    <div>
-      Balance: {balance} SOL
+    <div className='balance'>
+      <p>Balance: {sol} SOL</p>
+      <p>Balance: {usdc} USDC</p>
     </div>
   )
 }
+
+export default Balance;

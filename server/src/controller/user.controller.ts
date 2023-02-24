@@ -1,7 +1,13 @@
+import { Request, Response } from 'express';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { clusterApiUrl, Connection, LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
-import {Request, Response} from 'express';
-import UserSchema from '../db/user.schema';
+import UserSchema from '../db/user/user.schema';
+import { usdcAddress } from '../lib/addresses';
+import { getAssociatedTokenAddress, getMint } from '@solana/spl-token';
+
+const network = WalletAdapterNetwork.Devnet;
+const endpoint = clusterApiUrl(network);
+const connection = new Connection(endpoint);
 
 export const login = async (req: Request, res: Response) => {
   const { account } = req.params;
@@ -43,10 +49,13 @@ export const getBalance = async (req: Request, res: Response) => {
     return;
   }
 
-  const network = WalletAdapterNetwork.Devnet;
-  const endpoint = clusterApiUrl(network);
-  const connection = new Connection(endpoint);
+  const sol = await connection.getBalance(new PublicKey(account));
 
-  const balance = await connection.getBalance(new PublicKey(account));
-  res.status(200).json(balance / LAMPORTS_PER_SOL);
+  const associatedTokenAddress = await getAssociatedTokenAddress(usdcAddress, new PublicKey(account));
+  const usdc = await connection.getTokenAccountBalance(associatedTokenAddress);
+
+  res.status(200).json({
+    sol: sol / LAMPORTS_PER_SOL,
+    usdc: usdc.value.uiAmount,
+  });
 };

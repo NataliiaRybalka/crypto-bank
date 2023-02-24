@@ -3,9 +3,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { Keypair, PublicKey, Transaction, clusterApiUrl, Connection } from '@solana/web3.js';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { createQR, encodeURL, findReference, FindReferenceError, TransactionRequestURLFields } from '@solana/pay';
-import { SERVER, SERVER_NGROK } from '../lib/constants';
+import { SERVER, SERVER_NGROK } from '../../lib/constants';
 
-export default function Transfer() {
+function Transfer() {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = clusterApiUrl(network);
   const connection = new Connection(endpoint);
@@ -111,27 +111,37 @@ export default function Transfer() {
   }
 
   return (
-    <div>
-      <label>Recipient: </label><input type='text' onChange={(e) => setRecipient(e.target.value)} />
-      <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
-      <label>Currency: </label>
-      <select onChange={(e) => setCurrency(e.target.value)}>
-        <option value='sol'>SOL</option>
-        <option value='usdc'>USDC</option>
-      </select>
+    <div className='transferTable'>
+      <div>
+        <label>Recipient: </label><input type='text' className='recipientInput' onChange={(e) => setRecipient(e.target.value)} />
+      </div>
+      <div>
+        <label>Sum: </label><input type='number' onChange={(e) => setAmount(Number(e.target.value))} min='0' value={amount} />
+      </div>
+      <div>
+        <label>Currency: </label>
+        <select onChange={(e) => setCurrency(e.target.value)}>
+          <option value='sol'>SOL</option>
+          <option value='usdc'>USDC</option>
+        </select>
+      </div>
 
-      <label>Confirm via: </label>
-      <select onChange={(e) => setConfirm(e.target.value)}>
-        <option value='phantom'>Phantom extension</option>
-        <option value='qr'>QR-code</option>
-      </select>
+      <div>
+        <label>Confirm via: </label>
+        <select onChange={(e) => setConfirm(e.target.value)}>
+          <option value='phantom'>Phantom extension</option>
+          <option value='qr'>QR-code</option>
+        </select>
+      </div>
 
-      {confirm === 'phantom' && <button onClick={getTransaction}>confirm</button>}
+      {confirm === 'phantom' && <button className='transferButton' onClick={getTransaction}>confirm</button>}
 
-      {(transaction && !isTx) && <p>Please approve the transaction using your wallet</p>}
-      {isTx && <p>Your transaction was successful</p>}
+      {(transaction && !isTx) && <p className='approveAlert'>Please approve the transaction using your wallet</p>}
+      {isTx && <p className='confirmAlert'>Your transaction was successful</p>}
 
       <div ref={qrRef} />
     </div>
   )
 }
+
+export default Transfer;
