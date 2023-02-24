@@ -47,7 +47,6 @@ function Transaction() {
           <tr>
             <td>transaction:</td>
             <td><MetaFields fields={tx.transaction} /></td>
-            {/* <td>{JSON.stringify(tx.transaction)}</td> */}
           </tr>
         </tbody>
       </table>
