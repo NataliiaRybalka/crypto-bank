@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      args:
+        NODE_ENV: development
+    environment:
+      PORT: 4000
+      NETWORK: devnet
+      SERVER_URL: localhost:4000
+    ports:
+      - "4000:4000"
+    volumes:
+      - "./tests:/server/tests"
+      - "./src:/server/src"
+    entrypoint: yarn run start:dev
+
+  mongo-express:
+    image: mongo-express
+    restart: "no"
+    depends_on:
+      - db
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=db
+    ports:
+      - "3377:8081"
+    networks:
+      - backend

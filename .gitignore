@@ -14,9 +14,6 @@
 /web/.env
 /server/.env
 
-# docker files
-/server/docker-compose.override.yml
-
 # server
 /server/yarn-error.log
 /server/.idea
